@@ -11,128 +11,108 @@
     <!-- 왼쪽: 공지 입력 -->
     <aside class="input-side">
       <header>
-        <h1>공지 입력</h1>
-        <p>슬랙에 올릴 공지를 작성합니다.</p>
+        <h1>공지 올리기</h1>
+        <p>올릴 공지를 작성하고, 게시할 플랫폼을 선택하세요.</p>
       </header>
 
       <div class="input-form">
         <div class="form-group">
           <label for="noticeTitle">제목</label>
-          <input type="text" id="noticeTitle" placeholder="동아리 하반기 행사">
+          <input type="text" id="noticeTitle" placeholder="동아리 하반기 행사" value="동아리 하반기 행사">
         </div>
 
         <div class="form-group">
           <label for="noticeDate">날짜</label>
-          <input type="text" id="noticeDate" placeholder="9월 20일(토)">
+          <input type="text" id="noticeDate" placeholder="9월 20일(토)" value="9월 20일(토)">
         </div>
 
         <div class="form-group">
           <label for="noticeTime">시간</label>
-          <input type="text" id="noticeTime" placeholder="14:00~17:00">
+          <input type="text" id="noticeTime" placeholder="14:00~17:00" value="14:00~17:00">
         </div>
 
         <div class="form-group">
           <label for="noticePlace">장소</label>
-          <input type="text" id="noticePlace" placeholder="본관 3층 강당">
+          <input type="text" id="noticePlace" placeholder="본관 3층 강당" value="본관 3층 강당">
         </div>
 
         <div class="form-group">
           <label for="noticeFee">참가비</label>
-          <input type="text" id="noticeFee" placeholder="5,000원">
+          <input type="text" id="noticeFee" placeholder="5,000원" value="5,000원">
         </div>
 
         <div class="form-group">
           <label for="noticeLink">신청 링크</label>
-          <input type="text" id="noticeLink" placeholder="https://apply.example.com/x9z2">
+          <input type="text" id="noticeLink" placeholder="https://apply.example.com/x9z2" value="https://apply.example.com/x9z2">
         </div>
 
         <div class="form-group">
           <label for="noticeDeadline">마감일</label>
-          <input type="text" id="noticeDeadline" placeholder="9월 15일(월) 18시">
+          <input type="text" id="noticeDeadline" placeholder="9월 15일(월) 18시" value="9월 15일(월) 18시">
         </div>
 
-        <button id="submitNoticeBtn">슬랙에 공지 올리기</button>
+        <div class="form-group">
+          <label>게시할 플랫폼 선택 (복수 선택 가능)</label>
+          <div class="platform-checkboxes">
+            <label class="checkbox-label"><input type="checkbox" value="slack" checked> 슬랙</label>
+            <label class="checkbox-label"><input type="checkbox" value="kakao" checked> 카톡</label>
+            <label class="checkbox-label"><input type="checkbox" value="insta" checked> 인스타</label>
+            <label class="checkbox-label"><input type="checkbox" value="form" checked> 신청폼</label>
+            <label class="checkbox-label"><input type="checkbox" value="telegram" checked> 텔레그램</label>
+            <label class="checkbox-label"><input type="checkbox" value="noticeboard" checked> 공지판</label>
+          </div>
+        </div>
+
+        <button id="submitNoticeBtn">공지 올리기</button>
       </div>
 
       <div class="notice-log" id="noticeLog">
         <h3>공지 기록</h3>
-        <ul id="logList">
-          <!-- 공지 기록 표시 -->
-        </ul>
+        <ul id="logList"></ul>
       </div>
     </aside>
 
-    <!-- 오른쪽: 가상 채팅방 UI 6개 -->
+    <!-- 오른쪽: 채팅방 UI 6개 -->
     <main class="chat-side">
       <header>
-        <h2>가상 채팅방</h2>
-        <p>각 채널의 공지 현재 상태</p>
+        <h2>채팅방 현재 상태</h2>
+        <p>각 플랫폼의 공지 및 대화 현황</p>
       </header>
 
       <div class="chat-grid">
         <div class="chat-room" id="chat-slack">
-          <div class="chat-header">
-            <span class="channel-badge">슬랙</span>
-            <span class="chat-title">#동아리-공지</span>
-          </div>
-          <div class="chat-messages" id="slack-messages">
-            <!-- 메시지 목록은 JS에서 채워짐 -->
-          </div>
+          <div class="chat-header"><span class="channel-badge">슬랙</span><span class="chat-title">#동아리-공지</span></div>
+          <div class="chat-messages" id="slack-messages"></div>
         </div>
 
         <div class="chat-room" id="chat-kakao">
-          <div class="chat-header">
-            <span class="channel-badge">카톡</span>
-            <span class="chat-title">동아리방</span>
-          </div>
-          <div class="chat-messages" id="kakao-messages">
-            <!-- 메시지 목록은 JS에서 채워짐 -->
-          </div>
+          <div class="chat-header"><span class="channel-badge">카톡</span><span class="chat-title">동아리방</span></div>
+          <div class="chat-messages" id="kakao-messages"></div>
         </div>
 
         <div class="chat-room" id="chat-insta">
-          <div class="chat-header">
-            <span class="channel-badge">인스타</span>
-            <span class="chat-title">@동아리-계정</span>
-          </div>
-          <div class="chat-messages" id="insta-messages">
-            <!-- 메시지 목록은 JS에서 채워짐 -->
-          </div>
+          <div class="chat-header"><span class="channel-badge">인스타</span><span class="chat-title">@동아리-계정</span></div>
+          <div class="chat-messages" id="insta-messages"></div>
         </div>
 
         <div class="chat-room" id="chat-form">
-          <div class="chat-header">
-            <span class="channel-badge">신청폼</span>
-            <span class="chat-title">행사 신청서</span>
-          </div>
-          <div class="chat-messages" id="form-messages">
-            <!-- 메시지 목록은 JS에서 채워짐 -->
-          </div>
+          <div class="chat-header"><span class="channel-badge">신청폼</span><span class="chat-title">행사 신청서</span></div>
+          <div class="chat-messages" id="form-messages"></div>
         </div>
 
         <div class="chat-room" id="chat-telegram">
-          <div class="chat-header">
-            <span class="channel-badge">텔레그램</span>
-            <span class="chat-title">@동아리-알림</span>
-          </div>
-          <div class="chat-messages" id="telegram-messages">
-            <!-- 메시지 목록은 JS에서 채워짐 -->
-          </div>
+          <div class="chat-header"><span class="channel-badge">텔레그램</span><span class="chat-title">@동아리-알림</span></div>
+          <div class="chat-messages" id="telegram-messages"></div>
         </div>
 
         <div class="chat-room" id="chat-noticeboard">
-          <div class="chat-header">
-            <span class="channel-badge">공지판</span>
-            <span class="chat-title">행사 게시판</span>
-          </div>
-          <div class="chat-messages" id="noticeboard-messages">
-            <!-- 메시지 목록은 JS에서 채워짐 -->
-          </div>
+          <div class="chat-header"><span class="channel-badge">공지판</span><span class="chat-title">행사 게시판</span></div>
+          <div class="chat-messages" id="noticeboard-messages"></div>
         </div>
       </div>
     </main>
 
-    <!-- 충돌 알림 팝업 (모달) -->
+    <!-- 충돌 알림 팝업 -->
     <div class="modal-overlay" id="conflictModal">
       <div class="modal-content">
         <div class="modal-header">
@@ -140,26 +120,13 @@
           <button class="modal-close" id="modalCloseBtn">&times;</button>
         </div>
         <div class="modal-body" id="modalBody">
-          <p class="modal-warning">
-            슬랙에 수정된 공지를 감지했습니다.
-          </p>
+          <p class="modal-warning">공지를 올리는 과정에서 다른 플랫폼과 차이가 발견되었습니다.</p>
           <div class="modal-stats">
-            <div class="stat-card">
-              <span class="stat-number">6</span>
-              <span class="stat-label">탐지 항목</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">3</span>
-              <span class="stat-label">어긋난 항목</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">5</span>
-              <span class="stat-label">채널</span>
-            </div>
+            <div class="stat-card"><span class="stat-number">6</span><span class="stat-label">탐지 항목</span></div>
+            <div class="stat-card"><span class="stat-number" id="mismatchCountDisplay">3</span><span class="stat-label">어긋난 항목</span></div>
+            <div class="stat-card"><span class="stat-number">5</span><span class="stat-label">채널</span></div>
           </div>
-          <div class="modal-mismatch-list" id="modalMismatchList">
-            <!-- 어긋난 항목 목록 -->
-          </div>
+          <div class="modal-mismatch-list" id="modalMismatchList"></div>
         </div>
         <div class="modal-footer">
           <button class="btn-secondary" id="modalViewDetailsBtn">항목별 대조 보기</button>
@@ -177,9 +144,7 @@
           <button class="modal-close" id="detailsCloseBtn">&times;</button>
         </div>
         <div class="modal-body" id="detailsBody">
-          <div class="details-content" id="detailsContent">
-            <!-- 대조 결과 내용 -->
-          </div>
+          <div class="details-content" id="detailsContent"></div>
         </div>
         <div class="modal-footer">
           <button class="btn-primary" id="detailsBackToConflictBtn">← 충돌 알림으로</button>
