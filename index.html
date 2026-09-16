@@ -8,7 +8,7 @@
 </head>
 <body>
   <div class="app-container">
-    <!-- 왼쪽: 공지 입력 -->
+    <!-- 왼쪽: 공지 입력 (40%) -->
     <aside class="input-side">
       <header>
         <h1>공지 올리기</h1>
@@ -72,41 +72,65 @@
       </div>
     </aside>
 
-    <!-- 오른쪽: 채팅방 UI 6개 -->
+    <!-- 오른쪽: 채팅방 현재 상태 (60%) -->
     <main class="chat-side">
       <header>
         <h2>채팅방 현재 상태</h2>
-        <p>각 플랫폼의 공지 및 대화 현황</p>
+        <p>각 플랫폼에 이미 올라가 있는 공지 현황</p>
       </header>
 
       <div class="chat-grid">
         <div class="chat-room" id="chat-slack">
           <div class="chat-header"><span class="channel-badge">슬랙</span><span class="chat-title">#동아리-공지</span></div>
+          <div class="notice-summary">
+            <strong>동아리 하반기 행사</strong>
+            <span class="summary-items">📅 9월 20일(토) | ⏰ 14:00~17:00 | 📍 본관 3층 강당 | 💰 5,000원</span>
+          </div>
           <div class="chat-messages" id="slack-messages"></div>
         </div>
 
         <div class="chat-room" id="chat-kakao">
           <div class="chat-header"><span class="channel-badge">카톡</span><span class="chat-title">동아리방</span></div>
+          <div class="notice-summary">
+            <strong>동아리 하반기 행사</strong>
+            <span class="summary-items">📅 9월 20일(토) | ⏰ 14:00~17:00 | 📍 본관 3층 강당 | 💰 5,000원</span>
+          </div>
           <div class="chat-messages" id="kakao-messages"></div>
         </div>
 
         <div class="chat-room" id="chat-insta">
           <div class="chat-header"><span class="channel-badge">인스타</span><span class="chat-title">@동아리-계정</span></div>
+          <div class="notice-summary">
+            <strong>동아리 하반기 행사</strong>
+            <span class="summary-items">📅 9월 20일(토) | ⏰ 14시~17시 | 📍 본관 3층 강당 | 💰 3,000원</span>
+          </div>
           <div class="chat-messages" id="insta-messages"></div>
         </div>
 
         <div class="chat-room" id="chat-form">
           <div class="chat-header"><span class="channel-badge">신청폼</span><span class="chat-title">행사 신청서</span></div>
+          <div class="notice-summary">
+            <strong>동아리 하반기 행사</strong>
+            <span class="summary-items">📅 2025년 9월 21일(일) | ⏰ 14:00~17:00 | 📍 본관 3층 대강당 | 💰 5,000원</span>
+          </div>
           <div class="chat-messages" id="form-messages"></div>
         </div>
 
         <div class="chat-room" id="chat-telegram">
           <div class="chat-header"><span class="channel-badge">텔레그램</span><span class="chat-title">@동아리-알림</span></div>
+          <div class="notice-summary">
+            <strong>동아리 하반기 행사</strong>
+            <span class="summary-items">📅 9월 20일(토) | ⏰ 14:00~17:00 | 📍 본관 3층 강당 | 💰 5,000원</span>
+          </div>
           <div class="chat-messages" id="telegram-messages"></div>
         </div>
 
         <div class="chat-room" id="chat-noticeboard">
           <div class="chat-header"><span class="channel-badge">공지판</span><span class="chat-title">행사 게시판</span></div>
+          <div class="notice-summary">
+            <strong>동아리 하반기 행사 (2025)</strong>
+            <span class="summary-items">📅 9월 20일(토) | ⏰ 14:00~17:00 | 📍 본관 3층 강당 | 💰 5,000원</span>
+          </div>
           <div class="chat-messages" id="noticeboard-messages"></div>
         </div>
       </div>

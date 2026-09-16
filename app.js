@@ -1,5 +1,5 @@
 // 초기 채팅방 데이터
-// 슬랙은 새로 올릴 공지 기준, 다른 플랫폼은 이미 올려진 다른 값이 있음 (충돌 포인트)
+// 각 플랫폼에 이미 같은 공지가 올려져 있음 (단, 일부 플랫폼은 값이 다름 - 충돌 포인트)
 const chatData = {
   slack: {
     title: '동아리 하반기 행사',
@@ -12,16 +12,16 @@ const chatData = {
       deadline: '9월 15일(월) 18시'
     },
     messages: [
-      { sender: '시스템', time: '지금', content: '채널이 준비되었습니다. 공지를 올리면 이곳에 표시됩니다.' },
+      { sender: '시스템', time: '지금', content: '슬랙 채널이 준비되었습니다.' },
       { sender: '회장', time: '오전 10:00', content: '이번 주 토요일에 행사 있죠?' },
-      { sender: '부회장', time: '오전 10:01', content: '넵 맞습니다!' },
+      { sender: '부회장', time: '오전 10:01', content: '넵 맞습니다! 9월 20일이요!' },
       { sender: '총무', time: '오전 10:02', content: '참가비 5,000원 준비해야겠네요' }
     ]
   },
   kakao: {
     title: '동아리 하반기 행사',
     items: {
-      date: '9월 21일(일)',        // ← 슬랙과 다른 날짜 (충돌!)
+      date: '9월 20일(토)',
       time: '14:00~17:00',
       place: '본관 3층 강당',
       fee: '5,000원',
@@ -31,8 +31,8 @@ const chatData = {
     messages: [
       { sender: '시스템', time: '지금', content: '카카오톡방이 준비되었습니다.' },
       { sender: '회장', time: '오전 9:30', content: '행사 공지 다들 보셨나요?' },
-      { sender: '임원A', time: '오전 9:31', content: '알겠습니다!' },
-      { sender: '임원B', time: '오전 9:32', content: '참가 신청 링크 공유해주세요~' }
+      { sender: '임원A', time: '오전 9:31', content: '네 봤습니다! 9월 20일 토요일!' },
+      { sender: '임원B', time: '오전 9:32', content: '참가비 5,000원이었군요' }
     ]
   },
   insta: {
@@ -41,26 +41,28 @@ const chatData = {
       date: '9월 20일(토)',
       time: '14시~17시',
       place: '본관 3층 강당',
-      fee: '3,000원',              // ← 슬랙과 다른 참가비 (충돌!)
-      link: 'bit.ly/apply-x9z2', // ← 슬랙과 다른 링크 (충돌!)
+      fee: '3,000원',
+      link: 'bit.ly/apply-x9z2',
       deadline: '9월 15일(월) 18시'
     },
     messages: [
-      { sender: '시스템', time: '지금', content: '인스타그램 계정이 준비되었습니다.' }
+      { sender: '시스템', time: '지금', content: '인스타그램 계정이 준비되었습니다.' },
+      { sender: '인스타관리자', time: '오후 4:00', content: '인스타 공지 올렸습니다! 참가비 3,000원으로 공지했어요' }
     ]
   },
   form: {
     title: '동아리 하반기 행사',
     items: {
-      date: '2025년 9월 20일(토)',
+      date: '2025년 9월 21일(일)',
       time: '14:00~17:00',
-      place: '본관 3층 대강당',      // ← 슬랙과 다른 장소명 (충돌!)
+      place: '본관 3층 대강당',
       fee: '5,000원',
       link: 'https://apply.example.com/x9z2',
-      deadline: '9월 16일(화) 18:00' // ← 슬랙과 다른 마감일 (충돌!)
+      deadline: '9월 16일(화) 18:00'
     },
     messages: [
-      { sender: '시스템', time: '지금', content: '신청폼이 준비되었습니다.' }
+      { sender: '시스템', time: '지금', content: '신청폼이 준비되었습니다.' },
+      { sender: '폼관리자', time: '오후 2:00', content: '신청폼에 행사 정보 등록 완료했습니다' }
     ]
   },
   telegram: {
@@ -75,8 +77,8 @@ const chatData = {
     },
     messages: [
       { sender: '시스템', time: '지금', content: '텔레그램 채널이 준비되었습니다.' },
-      { sender: '회원1', time: '오후 2:00', content: '행사 공지는 어디서 확인하나요?' },
-      { sender: '운영진', time: '오후 2:01', content: '여기로 오시면 됩니다!' }
+      { sender: '회원1', time: '오후 2:00', content: '행사 공지 확인했습니다!' },
+      { sender: '운영진', time: '오후 2:01', content: '네! 9월 20일 토요일이에요' }
     ]
   },
   noticeboard: {
@@ -90,7 +92,8 @@ const chatData = {
       deadline: '9월 15일(월) 18시'
     },
     messages: [
-      { sender: '시스템', time: '지금', content: '공지판 게시판이 준비되었습니다.' }
+      { sender: '시스템', time: '지금', content: '공지판 게시판이 준비되었습니다.' },
+      { sender: '관리자', time: '오전 9:00', content: '행사 공지 게시 완료했습니다' }
     ]
   }
 };
@@ -155,6 +158,15 @@ function renderChatRoom(channelKey, roomEl) {
     noticeboard: '행사 게시판'
   };
 
+  const summaryHtml = `
+    <div class="notice-summary">
+      <strong>${data.title}</strong>
+      <span class="summary-items">
+        📅 ${data.items.date} | ⏰ ${data.items.time} | 📍 ${data.items.place} | 💰 ${data.items.fee}
+      </span>
+    </div>
+  `;
+
   const messagesHtml = data.messages.map(msg => {
     const isSystem = msg.sender === '시스템';
     const msgClass = isSystem ? 'system-message' : 'user-message';
@@ -172,13 +184,13 @@ function renderChatRoom(channelKey, roomEl) {
       <span class="channel-badge" style="background: ${badgeColors[channelKey]}">${channelNames[channelKey]}</span>
       <span class="chat-title">${chatTitles[channelKey]}</span>
     </div>
+    ${summaryHtml}
     <div class="chat-messages">
       ${messagesHtml}
     </div>
   `;
 }
 
-// 모든 채팅방 렌더링
 function renderAllChatRooms() {
   const channelKeys = ['slack', 'kakao', 'insta', 'form', 'telegram', 'noticeboard'];
   const roomEls = {
@@ -195,7 +207,6 @@ function renderAllChatRooms() {
   });
 }
 
-// 공지 기록 렌더링
 function renderNoticeLog() {
   logListEl.innerHTML = noticeLog.map(log => `
     <li>
@@ -205,7 +216,6 @@ function renderNoticeLog() {
   `).join('');
 }
 
-// 공지 입력 핸들러
 submitNoticeBtn.addEventListener('click', () => {
   const checkboxes = document.querySelectorAll('.platform-checkboxes input[type="checkbox"]:checked');
   const selectedPlatforms = Array.from(checkboxes).map(cb => cb.value);
@@ -238,7 +248,6 @@ submitNoticeBtn.addEventListener('click', () => {
 
   renderNoticeLog();
 
-  // 선택된 플랫폼들의 데이터 업데이트
   selectedPlatforms.forEach(platform => {
     if (currentChatData[platform]) {
       currentChatData[platform].title = newNotice.title;
@@ -262,7 +271,6 @@ submitNoticeBtn.addEventListener('click', () => {
   }, 300);
 });
 
-// 충돌 감지 (notice-conflict 방식)
 function detectConflicts(slackItems, selectedPlatforms) {
   const channels = selectedPlatforms.filter(p => p !== 'slack');
   const mismatchItems = [];
@@ -323,7 +331,6 @@ function detectConflicts(slackItems, selectedPlatforms) {
   showConflictModal();
 }
 
-// 충돌 알림 팝업 표시
 function showConflictModal() {
   mismatchCountDisplay.textContent = conflictData.mismatchCount;
 
@@ -480,6 +487,6 @@ function applyAllModifications() {
   detailsModal.classList.remove('visible');
 }
 
-// 초기 렌더링
 renderAllChatRooms();
 renderNoticeLog();
+JSEOF

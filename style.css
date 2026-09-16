@@ -18,9 +18,9 @@ body {
   height: 100vh;
 }
 
-/* 왼쪽: 공지 입력 */
+/* 왼쪽: 공지 입력 (40%) */
 .input-side {
-  width: 320px;
+  width: 40%;
   background: white;
   border-right: 1px solid #e0e0e0;
   display: flex;
@@ -136,7 +136,7 @@ body {
 
 #logList {
   list-style: none;
-  max-height: 120px;
+  max-height: 100px;
   overflow-y: auto;
 }
 
@@ -144,9 +144,9 @@ body {
   background: white;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
-  padding: 6px 10px;
-  margin-bottom: 5px;
-  font-size: 0.85rem;
+  padding: 5px 10px;
+  margin-bottom: 4px;
+  font-size: 0.8rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -154,10 +154,10 @@ body {
 
 #logList li .log-time {
   color: #95a5a6;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
-/* 오른쪽: 채팅방 */
+/* 오른쪽: 채팅방 현재 상태 (60%) */
 .chat-side {
   flex: 1;
   padding: 20px;
@@ -183,8 +183,8 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 12px;
-  height: calc(100vh - 180px);
+  gap: 10px;
+  height: calc(100vh - 160px);
 }
 
 .chat-room {
@@ -194,6 +194,12 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.chat-room.has-conflict {
+  border-color: #e74c3c;
+  background: #fff5f5;
 }
 
 .chat-header {
@@ -216,6 +222,22 @@ body {
 .chat-title {
   color: #333;
   font-size: 0.8rem;
+}
+
+.notice-summary {
+  background: #e8f4fd;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.notice-summary strong {
+  color: #2c3e50;
+}
+
+.summary-items {
+  color: #555;
+  margin-left: 8px;
 }
 
 .chat-messages {
@@ -293,7 +315,7 @@ body {
   max-height: 80vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .modal-header {
@@ -528,12 +550,12 @@ body {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid #e0e0e0;
-    max-height: 45vh;
+    max-height: 40vh;
   }
 
   .chat-grid {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    height: calc(100vh - 180px);
+    height: calc(100vh - 160px);
   }
 }
