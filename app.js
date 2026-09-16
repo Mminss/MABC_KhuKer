@@ -537,7 +537,7 @@ function applyAllModifications() {
 
   renderAllChatRooms();
 
-  alert('✅ 전체 수정 반영 완료!\n선택된 플랫폼의 공지가 슬랙 기준으로 업데이트되었습니다.');
+  alert('✅ 전체 수정 반영 완료!\n공지가 업데이트되었습니다!');
   conflictModal.classList.remove('visible');
   detailsModal.classList.remove('visible');
 }
