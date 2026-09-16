@@ -130,10 +130,10 @@ const detailsCancelBtn = document.getElementById('detailsCancelBtn');
 
 // 플랫폼별 로고/색상 매핑
 const platformLogos = {
-  slack: { src: 'slack.svg',  color: '#4A154B'},
+  slack: { src: 'slack.svg', color: '#4A154B' },
   kakao: { src: 'kakao.svg', color: '#5865F2' },
   insta: { src: 'insta.svg', color: '#FF0069' },
-  form:  { src: 'discord.svg',  color: '#5865F2' },
+  form: { src: 'discord.svg', color: '#5865F2' },
   telegram: { src: 'telegram.svg', color: '#26A5E4' },
   noticeboard: { src: null, color: '#95a5a6' }
 };
@@ -183,8 +183,8 @@ function renderChatRoom(channelKey, roomEl) {
   roomEl.innerHTML = `
     <div class="chat-header" data-platform="${channelKey}">
       ${channelKey === 'noticeboard'
-        ? `<span class="channel-badge" style="background:${badgeColors[channelKey]}">공지판</span>`
-        : `<img class="platform-logo" data-platform="${channelKey}" alt="${channelKey}">`}
+      ? `<span class="channel-badge" style="background:${badgeColors[channelKey]}">공지ㅇㅇㅇ판</span>`
+      : `<img class="platform-logo" data-platform="${channelKey}" alt="${channelKey}">`}
       <span class="chat-title">${chatTitles[channelKey]}</span>
     </div>
     ${summaryHtml}
@@ -305,35 +305,28 @@ submitNoticeBtn.addEventListener('click', () => {
 
 function detectConflicts(baseItems, selectedPlatforms) {
   const allPlatforms = ['slack', 'kakao', 'insta', 'form', 'telegram', 'noticeboard'];
-  const selectedSet = new Set(selectedPlatforms);
-
-  // 기준 공지: 선택된 플랫폼 중 목록에서 먼저 나오는 것을 기준으로 사용
-  const basePlatform = selectedPlatforms.find(p => allPlatforms.includes(p)) || 'slack';
-  const baseValueMap = baseItems;
-
-  const otherPlatforms = allPlatforms.filter(p => p !== basePlatform);
   const mismatchItems = [];
-  const totalItems = Object.keys(baseValueMap).length;
+  const totalItems = Object.keys(baseItems).length;
 
   let mismatchCount = 0;
 
-  for (const [key, baseValue] of Object.entries(baseValueMap)) {
+  for (const [key, baseValue] of Object.entries(baseItems)) {
     const label = key === 'fee' ? '참가비' :
-                  key === 'link' ? '신청 링크' :
-                  key === 'deadline' ? '마감일' :
-                  key === 'date' ? '날짜' :
-                  key === 'time' ? '시간' :
-                  key === 'title' ? '제목' :
-                  key.charAt(0).toUpperCase() + key.slice(1);
+      key === 'link' ? '신청 링크' :
+        key === 'deadline' ? '마감일' :
+          key === 'date' ? '날짜' :
+            key === 'time' ? '시간' :
+              key === 'title' ? '제목' :
+                key.charAt(0).toUpperCase() + key.slice(1);
 
-    const otherValues = otherPlatforms.map(channel => ({
+    const otherValues = allPlatforms.map(channel => ({
       channel: channel,
-      channelName:  channel === 'slack' ? '슬랙' :
-                    channel === 'kakao' ? '카톡' :
-                    channel === 'insta' ? '인스타' :
-                    channel === 'form' ? '디스코드' :
-                    channel === 'telegram' ? '텔레그램' :
-                    channel === 'noticeboard' ? '공지판' : channel,
+      channelName: channel === 'slack' ? '슬랙' :
+        channel === 'kakao' ? '카톡' :
+          channel === 'insta' ? '인스타' :
+            channel === 'form' ? '디스코드' :
+              channel === 'telegram' ? '텔레그램' :
+                channel === 'noticeboard' ? '공지판' : channel,
       value: currentChatData[channel] ? currentChatData[channel].items[key] : '(데이터 없음)'
     }));
 
@@ -349,13 +342,13 @@ function detectConflicts(baseItems, selectedPlatforms) {
     mismatchItems.push({
       key,
       label,
-      basePlatform,
+      basePlatform: 'input',
       baseValue,
       otherValues,
       status: '어긋남',
       differentChannels,
       sameChannels,
-      excerpt: `${basePlatform} - ${label}: "${baseValue}"`
+      excerpt: `입력 공지 - ${label}: "${baseValue}"`
     });
   }
 
@@ -365,7 +358,7 @@ function detectConflicts(baseItems, selectedPlatforms) {
     channelCount: allPlatforms.length,
     mismatchItems,
     selectedPlatforms,
-    basePlatform
+    basePlatform: 'input'
   };
 
   showConflictModal();
@@ -397,15 +390,15 @@ function showConflictModal() {
         <div class="mismatch-item">
           <h4>❌ ${item.label}</h4>
           <div class="channel-values">
-            ${item.differentChannels.map(v => `
-              <div class="different">${v.channelName}: ${v.value} ❌</div>
-            `).join('')}
-            ${item.sameChannels.map(v => `
-              <div class="same">${v.channelName}: ${v.value} ✅</div>
-            `).join('')}
-          </div>
-          <div class="source-excerpt">
-            "${item.excerpt}"
+            <div class="input-base">📝 입력 공지: ${item.baseValue}</div>
+            ${item.otherValues.map(v => {
+              const isSame = v.value === item.baseValue;
+              return `
+                <div class="${isSame ? 'same' : 'different'}">
+                  ${v.channelName}: ${v.value}${isSame ? ' ✅' : ' ❌'}
+                </div>
+              `;
+            }).join('')}
           </div>
         </div>
       `).join('')}
@@ -435,13 +428,9 @@ modalCancelBtn.addEventListener('click', () => {
 function showDetailsModal() {
   let detailsHtml = '';
 
-  for (const item of conflictData.mismatchItems) {
-    const baseLabel = item.basePlatform === 'slack' ? '슬랙' :
-                     item.basePlatform === 'kakao' ? '카톡' :
-                     item.basePlatform === 'insta' ? '인스타' :
-                     item.basePlatform === 'form' ? '디스코드' :
-                     item.basePlatform === 'telegram' ? '텔레그램' : '공지판';
+  const seenChannels = new Set();
 
+  for (const item of conflictData.mismatchItems) {
     detailsHtml += `
       <div class="detail-item">
         <h4>
@@ -449,13 +438,17 @@ function showDetailsModal() {
           <span class="status-badge">어긋남</span>
         </h4>
         <div class="channel-row">
-          <span class="channel-name">${baseLabel}</span>
+          <span class="channel-name">입력 공지</span>
           <span class="channel-value base">${item.baseValue}</span>
         </div>
         ${item.otherValues.map(v => {
           const isSame = v.value === item.baseValue;
+          const isDuplicate = seenChannels.has(v.channel);
+          if (!isDuplicate) {
+            seenChannels.add(v.channel);
+          }
           return `
-            <div class="channel-row ${isSame ? 'same-row' : 'different-row'}">
+            <div class="channel-row ${isSame ? 'same-row' : 'different-row'} ${isDuplicate ? 'duplicated-row' : ''}">
               <span class="channel-name">${v.channelName}</span>
               <span class="channel-value ${isSame ? 'same' : 'different'}">
                 ${v.value}${isSame ? ' ✅' : ' ❌'}
@@ -463,9 +456,6 @@ function showDetailsModal() {
             </div>
           `;
         }).join('')}
-        <div class="source-excerpt">
-          "${baseLabel} - ${item.label}: ${item.baseValue}"
-        </div>
       </div>
     `;
   }
