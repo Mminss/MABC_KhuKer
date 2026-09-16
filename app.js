@@ -128,6 +128,16 @@ const detailsBackToConflictBtn = document.getElementById('detailsBackToConflictB
 const detailsApplyAllBtn = document.getElementById('detailsApplyAllBtn');
 const detailsCancelBtn = document.getElementById('detailsCancelBtn');
 
+// 플랫폼별 로고/색상 매핑
+const platformLogos = {
+  slack: { src: 'slack.svg',  color: '#4A154B'},
+  kakao: { src: 'kakao.svg', color: '#5865F2' },
+  insta: { src: 'insta.svg', color: '#FF0069' },
+  form:  { src: 'discord.svg',  color: '#5865F2' },
+  telegram: { src: 'telegram.svg', color: '#26A5E4' },
+  noticeboard: { src: null, color: '#95a5a6' }
+};
+
 // 채팅방 렌더링
 function renderChatRoom(channelKey, roomEl) {
   const data = currentChatData[channelKey];
@@ -140,21 +150,12 @@ function renderChatRoom(channelKey, roomEl) {
     noticeboard: '#95a5a6'
   };
 
-  const channelNames = {
-    slack: '슬랙',
-    kakao: '카톡',
-    insta: '인스타',
-    form: '신청폼',
-    telegram: '텔레그램',
-    noticeboard: '공지판'
-  };
-
   const chatTitles = {
-    slack: '#동아리-공지',
-    kakao: '동아리방',
-    insta: '@동아리-계정',
-    form: '행사 신청서',
-    telegram: '@동아리-알림',
+    slack: 'slack',
+    kakao: 'kakao',
+    insta: 'insta',
+    form: 'discord',
+    telegram: 'telegram',
     noticeboard: '행사 게시판'
   };
 
@@ -180,8 +181,10 @@ function renderChatRoom(channelKey, roomEl) {
   }).join('');
 
   roomEl.innerHTML = `
-    <div class="chat-header">
-      <span class="channel-badge" style="background: ${badgeColors[channelKey]}">${channelNames[channelKey]}</span>
+    <div class="chat-header" data-platform="${channelKey}">
+      ${channelKey === 'noticeboard'
+        ? `<span class="channel-badge" style="background:${badgeColors[channelKey]}">공지판</span>`
+        : `<img class="platform-logo" data-platform="${channelKey}" alt="${channelKey}">`}
       <span class="chat-title">${chatTitles[channelKey]}</span>
     </div>
     ${summaryHtml}
@@ -189,6 +192,24 @@ function renderChatRoom(channelKey, roomEl) {
       ${messagesHtml}
     </div>
   `;
+
+  if (channelKey !== 'noticeboard') {
+    const logoEl = roomEl.querySelector('.platform-logo');
+    const logoInfo = platformLogos[channelKey];
+    if (logoInfo && logoInfo.src) {
+      logoEl.src = logoInfo.src;
+      logoEl.style.filter = logoInfo.color ? `brightness(0) saturate(100%) invert(${hexToRgb(logoInfo.color)})` : '';
+    }
+  }
+}
+
+
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return (255 - r) / 255 + ',' + (255 - g) / 255 + ',' + (255 - b) / 255;
 }
 
 function renderAllChatRooms() {
@@ -204,6 +225,17 @@ function renderAllChatRooms() {
 
   channelKeys.forEach(key => {
     renderChatRoom(key, roomEls[key]);
+  });
+
+  // 체크박스 라벨 내 로고 채우기
+  document.querySelectorAll('.checkbox-label[data-platform]').forEach(label => {
+    const key = label.getAttribute('data-platform');
+    const logoEl = label.querySelector('.platform-logo');
+    const logoInfo = platformLogos[key];
+    if (logoEl && logoInfo && logoInfo.src) {
+      logoEl.src = logoInfo.src;
+      logoEl.style.filter = logoInfo.color ? `brightness(0) saturate(100%) invert(${hexToRgb(logoInfo.color)})` : '';
+    }
   });
 }
 
@@ -271,61 +303,69 @@ submitNoticeBtn.addEventListener('click', () => {
   }, 300);
 });
 
-function detectConflicts(slackItems, selectedPlatforms) {
-  const channels = selectedPlatforms.filter(p => p !== 'slack');
+function detectConflicts(baseItems, selectedPlatforms) {
+  const allPlatforms = ['slack', 'kakao', 'insta', 'form', 'telegram', 'noticeboard'];
+  const selectedSet = new Set(selectedPlatforms);
+
+  // 기준 공지: 선택된 플랫폼 중 목록에서 먼저 나오는 것을 기준으로 사용
+  const basePlatform = selectedPlatforms.find(p => allPlatforms.includes(p)) || 'slack';
+  const baseValueMap = baseItems;
+
+  const otherPlatforms = allPlatforms.filter(p => p !== basePlatform);
   const mismatchItems = [];
-  const totalItems = Object.keys(slackItems).length;
+  const totalItems = Object.keys(baseValueMap).length;
 
   let mismatchCount = 0;
 
-  for (const [key, slackValue] of Object.entries(slackItems)) {
+  for (const [key, baseValue] of Object.entries(baseValueMap)) {
     const label = key === 'fee' ? '참가비' :
                   key === 'link' ? '신청 링크' :
                   key === 'deadline' ? '마감일' :
                   key === 'date' ? '날짜' :
                   key === 'time' ? '시간' :
+                  key === 'title' ? '제목' :
                   key.charAt(0).toUpperCase() + key.slice(1);
 
-    const otherValues = channels.map(channel => ({
+    const otherValues = otherPlatforms.map(channel => ({
       channel: channel,
-      channelName: channel === 'kakao' ? '카톡' :
+      channelName:  channel === 'slack' ? '슬랙' :
+                    channel === 'kakao' ? '카톡' :
                     channel === 'insta' ? '인스타' :
-                    channel === 'form' ? '신청폼' :
-                    channel === 'telegram' ? '텔레그램' : '공지판',
-      value: currentChatData[channel].items[key]
+                    channel === 'form' ? '디스코드' :
+                    channel === 'telegram' ? '텔레그램' :
+                    channel === 'noticeboard' ? '공지판' : channel,
+      value: currentChatData[channel] ? currentChatData[channel].items[key] : '(데이터 없음)'
     }));
 
-    const allSame = otherValues.every(v => v.value === slackValue);
-    const someDifferent = otherValues.some(v => v.value !== slackValue);
+    const differentChannels = otherValues.filter(v => v.value !== baseValue);
+    const sameChannels = otherValues.filter(v => v.value === baseValue);
 
-    if (allSame) {
+    if (differentChannels.length === 0) {
       continue;
     }
 
-    if (someDifferent) {
-      mismatchCount++;
-      const differentChannels = otherValues.filter(v => v.value !== slackValue);
-      const sameChannels = otherValues.filter(v => v.value === slackValue);
+    mismatchCount++;
 
-      mismatchItems.push({
-        key,
-        label,
-        slackValue,
-        otherValues,
-        status: '어긋남',
-        differentChannels,
-        sameChannels,
-        excerpt: `슬랙 - ${label}: "${slackValue}"`
-      });
-    }
+    mismatchItems.push({
+      key,
+      label,
+      basePlatform,
+      baseValue,
+      otherValues,
+      status: '어긋남',
+      differentChannels,
+      sameChannels,
+      excerpt: `${basePlatform} - ${label}: "${baseValue}"`
+    });
   }
 
   conflictData = {
     totalItems,
     mismatchCount,
-    channelCount: channels.length + 1,
+    channelCount: allPlatforms.length,
     mismatchItems,
-    selectedPlatforms
+    selectedPlatforms,
+    basePlatform
   };
 
   showConflictModal();
@@ -357,7 +397,6 @@ function showConflictModal() {
         <div class="mismatch-item">
           <h4>❌ ${item.label}</h4>
           <div class="channel-values">
-            <div><strong>슬랙:</strong> ${item.slackValue}</div>
             ${item.differentChannels.map(v => `
               <div class="different">${v.channelName}: ${v.value} ❌</div>
             `).join('')}
@@ -397,6 +436,12 @@ function showDetailsModal() {
   let detailsHtml = '';
 
   for (const item of conflictData.mismatchItems) {
+    const baseLabel = item.basePlatform === 'slack' ? '슬랙' :
+                     item.basePlatform === 'kakao' ? '카톡' :
+                     item.basePlatform === 'insta' ? '인스타' :
+                     item.basePlatform === 'form' ? '디스코드' :
+                     item.basePlatform === 'telegram' ? '텔레그램' : '공지판';
+
     detailsHtml += `
       <div class="detail-item">
         <h4>
@@ -404,21 +449,31 @@ function showDetailsModal() {
           <span class="status-badge">어긋남</span>
         </h4>
         <div class="channel-row">
-          <span class="channel-name">슬랙</span>
-          <span class="channel-value">${item.slackValue}</span>
+          <span class="channel-name">${baseLabel}</span>
+          <span class="channel-value base">${item.baseValue}</span>
         </div>
-        ${item.otherValues.map(v => `
-          <div class="channel-row">
-            <span class="channel-name">${v.channelName}</span>
-            <span class="channel-value ${v.value !== item.slackValue ? 'different' : ''}">
-              ${v.value}
-              ${v.value !== item.slackValue ? '❌' : '✅'}
-            </span>
-          </div>
-        `).join('')}
+        ${item.otherValues.map(v => {
+          const isSame = v.value === item.baseValue;
+          return `
+            <div class="channel-row ${isSame ? 'same-row' : 'different-row'}">
+              <span class="channel-name">${v.channelName}</span>
+              <span class="channel-value ${isSame ? 'same' : 'different'}">
+                ${v.value}${isSame ? ' ✅' : ' ❌'}
+              </span>
+            </div>
+          `;
+        }).join('')}
         <div class="source-excerpt">
-          "슬랙 - ${item.label}: ${item.slackValue}"
+          "${baseLabel} - ${item.label}: ${item.baseValue}"
         </div>
+      </div>
+    `;
+  }
+
+  if (!detailsHtml) {
+    detailsHtml = `
+      <div class="detail-empty">
+        <p>현재까지 어긋난 항목이 없습니다.</p>
       </div>
     `;
   }

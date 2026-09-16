@@ -54,12 +54,12 @@
         <div class="form-group">
           <label>게시할 플랫폼 선택 (복수 선택 가능)</label>
           <div class="platform-checkboxes">
-            <label class="checkbox-label"><input type="checkbox" value="slack" checked> 슬랙</label>
-            <label class="checkbox-label"><input type="checkbox" value="kakao" checked> 카톡</label>
-            <label class="checkbox-label"><input type="checkbox" value="insta" checked> 인스타</label>
-            <label class="checkbox-label"><input type="checkbox" value="form" checked> 신청폼</label>
-            <label class="checkbox-label"><input type="checkbox" value="telegram" checked> 텔레그램</label>
-            <label class="checkbox-label"><input type="checkbox" value="noticeboard" checked> 공지판</label>
+            <label class="checkbox-label" data-platform="slack"><input type="checkbox" value="slack" checked><img class="platform-logo" data-platform="slack" alt="slack">slack</label>
+            <label class="checkbox-label" data-platform="kakao"><input type="checkbox" value="kakao" checked><img class="platform-logo" data-platform="kakao" alt="카카오톡">kakaotalk</label>
+            <label class="checkbox-label" data-platform="insta"><input type="checkbox" value="insta" checked><img class="platform-logo" data-platform="insta" alt="인스타그램">instagram</label>
+            <label class="checkbox-label" data-platform="form"><input type="checkbox" value="form" checked><img class="platform-logo" data-platform="form" alt="discord">discord</label>
+            <label class="checkbox-label" data-platform="telegram"><input type="checkbox" value="telegram" checked><img class="platform-logo" data-platform="telegram" alt="텔레그램">telegram</label>
+            <label class="checkbox-label" data-platform="noticeboard"><input type="checkbox" value="noticeboard" checked><span class="channel-badge" style="background:#95a5a6">공지판</span></label>
           </div>
         </div>
 
@@ -81,7 +81,10 @@
 
       <div class="chat-grid">
         <div class="chat-room" id="chat-slack">
-          <div class="chat-header"><span class="channel-badge">슬랙</span><span class="chat-title">#동아리-공지</span></div>
+          <div class="chat-header" data-platform="slack">
+            <img class="platform-logo" data-platform="slack" alt="slack">
+            <span class="chat-title">#동아리-공지</span>
+          </div>
           <div class="notice-summary">
             <strong>동아리 하반기 행사</strong>
             <span class="summary-items">📅 9월 20일(토) | ⏰ 14:00~17:00 | 📍 본관 3층 강당 | 💰 5,000원</span>
@@ -90,7 +93,10 @@
         </div>
 
         <div class="chat-room" id="chat-kakao">
-          <div class="chat-header"><span class="channel-badge">카톡</span><span class="chat-title">동아리방</span></div>
+          <div class="chat-header" data-platform="kakao">
+            <img class="platform-logo" data-platform="kakao" alt="카카오톡">
+            <span class="chat-title">동아리방</span>
+          </div>
           <div class="notice-summary">
             <strong>동아리 하반기 행사</strong>
             <span class="summary-items">📅 9월 20일(토) | ⏰ 14:00~17:00 | 📍 본관 3층 강당 | 💰 5,000원</span>
@@ -99,7 +105,10 @@
         </div>
 
         <div class="chat-room" id="chat-insta">
-          <div class="chat-header"><span class="channel-badge">인스타</span><span class="chat-title">@동아리-계정</span></div>
+          <div class="chat-header" data-platform="insta">
+            <img class="platform-logo" data-platform="insta" alt="인스타그램">
+            <span class="chat-title">@동아리-계정</span>
+          </div>
           <div class="notice-summary">
             <strong>동아리 하반기 행사</strong>
             <span class="summary-items">📅 9월 20일(토) | ⏰ 14시~17시 | 📍 본관 3층 강당 | 💰 3,000원</span>
@@ -108,7 +117,10 @@
         </div>
 
         <div class="chat-room" id="chat-form">
-          <div class="chat-header"><span class="channel-badge">신청폼</span><span class="chat-title">행사 신청서</span></div>
+          <div class="chat-header" data-platform="form">
+            <img class="platform-logo" data-platform="form" alt="discord">
+            <span class="chat-title">행사 신청서</span>
+          </div>
           <div class="notice-summary">
             <strong>동아리 하반기 행사</strong>
             <span class="summary-items">📅 2025년 9월 21일(일) | ⏰ 14:00~17:00 | 📍 본관 3층 대강당 | 💰 5,000원</span>
@@ -117,7 +129,10 @@
         </div>
 
         <div class="chat-room" id="chat-telegram">
-          <div class="chat-header"><span class="channel-badge">텔레그램</span><span class="chat-title">@동아리-알림</span></div>
+          <div class="chat-header" data-platform="telegram">
+            <img class="platform-logo" data-platform="telegram" alt="텔레그램">
+            <span class="chat-title">@동아리-알림</span>
+          </div>
           <div class="notice-summary">
             <strong>동아리 하반기 행사</strong>
             <span class="summary-items">📅 9월 20일(토) | ⏰ 14:00~17:00 | 📍 본관 3층 강당 | 💰 5,000원</span>
@@ -126,7 +141,10 @@
         </div>
 
         <div class="chat-room" id="chat-noticeboard">
-          <div class="chat-header"><span class="channel-badge">공지판</span><span class="chat-title">행사 게시판</span></div>
+          <div class="chat-header" data-platform="noticeboard">
+            <span class="channel-badge" style="background:#95a5a6">공지판</span>
+            <span class="chat-title">행사 게시판</span>
+          </div>
           <div class="notice-summary">
             <strong>동아리 하반기 행사 (2025)</strong>
             <span class="summary-items">📅 9월 20일(토) | ⏰ 14:00~17:00 | 📍 본관 3층 강당 | 💰 5,000원</span>
