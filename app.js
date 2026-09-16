@@ -183,7 +183,7 @@ function renderChatRoom(channelKey, roomEl) {
   roomEl.innerHTML = `
     <div class="chat-header" data-platform="${channelKey}">
       ${channelKey === 'noticeboard'
-      ? `<span class="channel-badge" style="background:${badgeColors[channelKey]}">공지ㅇㅇㅇ판</span>`
+      ? `<span class="channel-badge" style="background:${badgeColors[channelKey]}">공지판</span>`
       : `<img class="platform-logo" data-platform="${channelKey}" alt="${channelKey}">`}
       <span class="chat-title">${chatTitles[channelKey]}</span>
     </div>
