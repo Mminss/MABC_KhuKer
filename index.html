@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공지 충돌 탐지기 - MABC KhuKer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- 왼쪽: 공지 입력 -->
+    <aside class="input-side">
+      <header>
+        <h1>공지 입력</h1>
+        <p>슬랙에 올릴 공지를 작성합니다.</p>
+      </header>
+
+      <div class="input-form">
+        <div class="form-group">
+          <label for="noticeTitle">제목</label>
+          <input type="text" id="noticeTitle" placeholder="동아리 하반기 행사">
+        </div>
+
+        <div class="form-group">
+          <label for="noticeDate">날짜</label>
+          <input type="text" id="noticeDate" placeholder="9월 20일(토)">
+        </div>
+
+        <div class="form-group">
+          <label for="noticeTime">시간</label>
+          <input type="text" id="noticeTime" placeholder="14:00~17:00">
+        </div>
+
+        <div class="form-group">
+          <label for="noticePlace">장소</label>
+          <input type="text" id="noticePlace" placeholder="본관 3층 강당">
+        </div>
+
+        <div class="form-group">
+          <label for="noticeFee">참가비</label>
+          <input type="text" id="noticeFee" placeholder="5,000원">
+        </div>
+
+        <div class="form-group">
+          <label for="noticeLink">신청 링크</label>
+          <input type="text" id="noticeLink" placeholder="https://apply.example.com/x9z2">
+        </div>
+
+        <div class="form-group">
+          <label for="noticeDeadline">마감일</label>
+          <input type="text" id="noticeDeadline" placeholder="9월 15일(월) 18시">
+        </div>
+
+        <button id="submitNoticeBtn">슬랙에 공지 올리기</button>
+      </div>
+
+      <div class="notice-log" id="noticeLog">
+        <h3>공지 기록</h3>
+        <ul id="logList">
+          <!-- 공지 기록 표시 -->
+        </ul>
+      </div>
+    </aside>
+
+    <!-- 오른쪽: 가상 채팅방 UI 6개 -->
+    <main class="chat-side">
+      <header>
+        <h2>가상 채팅방</h2>
+        <p>각 채널의 공지 현재 상태</p>
+      </header>
+
+      <div class="chat-grid">
+        <div class="chat-room" id="chat-slack">
+          <div class="chat-header">
+            <span class="channel-badge">슬랙</span>
+            <span class="chat-title">#동아리-공지</span>
+          </div>
+          <div class="chat-messages" id="slack-messages">
+            <!-- 메시지 목록은 JS에서 채워짐 -->
+          </div>
+        </div>
+
+        <div class="chat-room" id="chat-kakao">
+          <div class="chat-header">
+            <span class="channel-badge">카톡</span>
+            <span class="chat-title">동아리방</span>
+          </div>
+          <div class="chat-messages" id="kakao-messages">
+            <!-- 메시지 목록은 JS에서 채워짐 -->
+          </div>
+        </div>
+
+        <div class="chat-room" id="chat-insta">
+          <div class="chat-header">
+            <span class="channel-badge">인스타</span>
+            <span class="chat-title">@동아리-계정</span>
+          </div>
+          <div class="chat-messages" id="insta-messages">
+            <!-- 메시지 목록은 JS에서 채워짐 -->
+          </div>
+        </div>
+
+        <div class="chat-room" id="chat-form">
+          <div class="chat-header">
+            <span class="channel-badge">신청폼</span>
+            <span class="chat-title">행사 신청서</span>
+          </div>
+          <div class="chat-messages" id="form-messages">
+            <!-- 메시지 목록은 JS에서 채워짐 -->
+          </div>
+        </div>
+
+        <div class="chat-room" id="chat-telegram">
+          <div class="chat-header">
+            <span class="channel-badge">텔레그램</span>
+            <span class="chat-title">@동아리-알림</span>
+          </div>
+          <div class="chat-messages" id="telegram-messages">
+            <!-- 메시지 목록은 JS에서 채워짐 -->
+          </div>
+        </div>
+
+        <div class="chat-room" id="chat-noticeboard">
+          <div class="chat-header">
+            <span class="channel-badge">공지판</span>
+            <span class="chat-title">행사 게시판</span>
+          </div>
+          <div class="chat-messages" id="noticeboard-messages">
+            <!-- 메시지 목록은 JS에서 채워짐 -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 충돌 알림 팝업 (모달) -->
+    <div class="modal-overlay" id="conflictModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>📢 공지 충돌 감지</h3>
+          <button class="modal-close" id="modalCloseBtn">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <p class="modal-warning">
+            슬랙에 수정된 공지를 감지했습니다.
+          </p>
+          <div class="modal-stats">
+            <div class="stat-card">
+              <span class="stat-number">6</span>
+              <span class="stat-label">탐지 항목</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">3</span>
+              <span class="stat-label">어긋난 항목</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">5</span>
+              <span class="stat-label">채널</span>
+            </div>
+          </div>
+          <div class="modal-mismatch-list" id="modalMismatchList">
+            <!-- 어긋난 항목 목록 -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="modalViewDetailsBtn">항목별 대조 보기</button>
+          <button class="btn-primary" id="modalApplyAllBtn">전체 수정 반영</button>
+          <button class="btn-cancel" id="modalCancelBtn">취소</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 항목별 대조 결과 팝업 -->
+    <div class="modal-overlay" id="detailsModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>📋 항목별 대조 결과</h3>
+          <button class="modal-close" id="detailsCloseBtn">&times;</button>
+        </div>
+        <div class="modal-body" id="detailsBody">
+          <div class="details-content" id="detailsContent">
+            <!-- 대조 결과 내용 -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-primary" id="detailsBackToConflictBtn">← 충돌 알림으로</button>
+          <button class="btn-primary" id="detailsApplyAllBtn">전체 수정 반영</button>
+          <button class="btn-cancel" id="detailsCancelBtn">취소</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
