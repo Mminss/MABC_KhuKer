@@ -47,7 +47,7 @@ const chatData = {
     },
     messages: [
       { sender: '시스템', time: '지금', content: '인스타그램 계정이 준비되었습니다.' },
-      { sender: '인스타관리자', time: '오후 4:00', content: '인스타 공지 올렸습니다! 참가비 3,000원으로 공지했어요' }
+      { sender: '인스타관리자', time: '오후 4:00', content: '인스타그램 공지 올렸습니다! 참가비 3,000원으로 공지했어요' }
     ]
   },
   form: {
@@ -153,7 +153,7 @@ function renderChatRoom(channelKey, roomEl) {
   const chatTitles = {
     slack: 'slack',
     kakao: 'kakao',
-    insta: 'insta',
+    insta: 'instagram',
     form: 'discord',
     telegram: 'telegram',
     noticeboard: '행사 게시판'
@@ -184,7 +184,7 @@ function renderChatRoom(channelKey, roomEl) {
     <div class="chat-header" data-platform="${channelKey}">
       ${channelKey === 'noticeboard'
       ? `<span class="channel-badge" style="background:${badgeColors[channelKey]}">공지판</span>`
-      : `<img class="platform-logo" data-platform="${channelKey}" alt="${channelKey}">`}
+      : `<img class="platform-logo" data-platform="${channelKey}" alt="${chatTitles[channelKey]}">`}
       <span class="chat-title">${chatTitles[channelKey]}</span>
     </div>
     ${summaryHtml}
@@ -323,7 +323,7 @@ function detectConflicts(baseItems, selectedPlatforms) {
       channel: channel,
       channelName: channel === 'slack' ? '슬랙' :
         channel === 'kakao' ? '카톡' :
-          channel === 'insta' ? '인스타' :
+          channel === 'insta' ? '인스타그램' :
             channel === 'form' ? '디스코드' :
               channel === 'telegram' ? '텔레그램' :
                 channel === 'noticeboard' ? '공지판' : channel,
